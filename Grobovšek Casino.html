@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grobovšek Casino</title>
+<style>
+:root{--bg:#0b0f16;--panel:#161c26;--line:#2d3745;--gold:#f5d15c;--gold2:#b8891d;--txt:#f1f3f6;--mut:#9aa5b4;--red:#b30000;--felt:#0f5a38;--ok:#72e9a4;--no:#ff7b7b;
+  color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#26364b,var(--bg) 55%);color:var(--txt);font:16px/1.4 "Trebuchet MS",Arial,sans-serif}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.mut{color:var(--mut);font-size:14px;text-align:center}
+
+/* start menu */
+#start{min-height:100vh;display:grid;place-items:center;padding:24px}
+.box{width:min(560px,100%);padding:36px 26px;text-align:center;background:linear-gradient(145deg,#303942,#161b20);border:4px solid #090b0d;box-shadow:inset 0 0 0 2px #737b81,0 20px 60px #000}
+.box h1{margin:0 0 6px;font-size:clamp(30px,8vw,46px);color:var(--gold);text-shadow:4px 4px #000}
+.mc{display:block;width:100%;max-width:420px;margin:12px auto;padding:15px;border:3px solid #111;background:linear-gradient(#70777d,#41464b);font-weight:bold;text-shadow:2px 2px #222;box-shadow:inset 2px 2px #aeb4b8,inset -2px -2px #111,0 5px 0 #090a0b}
+.mc:hover{filter:brightness(1.15)}
+.mc:active{transform:translateY(4px);box-shadow:none}
+.mc.gold{background:linear-gradient(#e5bd47,#a97912);color:#241a00;text-shadow:none}
+
+/* app shell */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;align-items:center;gap:12px;padding:10px 16px;background:linear-gradient(#222a35,#090c11);border-bottom:2px solid var(--gold)}
+.logo{flex:1;font-weight:bold;letter-spacing:2px;color:var(--gold)}
+.bal{padding:5px 14px;border:1px solid #777;border-radius:10px;background:#12161d;text-align:right}
+.bal small{display:block;color:var(--mut);font-size:11px}.bal b{color:#ffd83d;font-size:19px}
+.btn{padding:11px 18px;border-radius:9px;border:2px solid #705600;background:linear-gradient(#ffe477,var(--gold2));color:#211800;font-weight:bold;box-shadow:0 4px 0 #604900}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+.btn.sm{padding:6px 12px}.btn.alt{background:linear-gradient(#444,#111);color:#fff;border-color:#000;box-shadow:0 4px 0 #000}
+main{max-width:960px;margin:0 auto;padding:16px 12px 40px}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:14px}
+nav button{padding:10px 14px;border-radius:10px;border:2px solid #555;background:linear-gradient(145deg,#353d47,#151a20);color:#ddd;font-weight:bold}
+nav button.on{background:linear-gradient(#ffe477,var(--gold2));color:#251b00;border-color:#fff0a0}
+.betbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.betbar b{min-width:64px;text-align:center;color:var(--gold);font-size:20px}
+.panel{padding:18px;background:linear-gradient(145deg,#252c36,#101319);border:2px solid #4c5560;border-radius:18px}
+.msg{min-height:30px;margin:14px 0 0;text-align:center;color:#ffd83b;font-size:19px;font-weight:bold}
+.center{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px}
+h2{margin:0 0 12px;text-align:center}
+
+/* slots */
+.machine{padding:18px;border-radius:16px;background:linear-gradient(145deg,#ddd,#777,#d0d0d0,#555);border:5px solid #222}
+.machine h2{padding:14px;border:4px solid #222;border-radius:10px;background:linear-gradient(#17365e,#071020);color:#20e8ff;text-shadow:0 0 8px #20e8ff,3px 3px #d00000;font-size:32px}
+.reels{display:flex;justify-content:center;gap:10px;margin-top:16px;padding:14px;background:#111;border:5px solid #4b4b4b;border-radius:12px}
+.reel{width:min(30%,140px);aspect-ratio:1;display:grid;place-items:center;font-size:clamp(40px,12vw,68px);background:linear-gradient(145deg,#fff,#aaa);border:5px solid #222;border-radius:10px}
+.reel.spin{animation:shake .08s infinite}
+@keyframes shake{50%{transform:translateY(5px)}}
+
+/* cards */
+.felt{padding:18px;border-radius:18px;background:radial-gradient(ellipse,#167044,var(--felt) 60%,#03351f);border:7px solid #292929}
+.hand{margin-top:12px;padding:12px;border-radius:12px;background:#0003;min-height:150px}
+.ht{display:flex;justify-content:space-between;font-weight:bold}
+.cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.card{width:68px;height:96px;padding:6px;display:flex;flex-direction:column;justify-content:space-between;border-radius:8px;border:2px solid #222;background:linear-gradient(145deg,#fff,#ddd);color:#111;font-weight:bold}
+.card.red{color:#d00000}.card.back{background:repeating-linear-gradient(45deg,#173c85,#173c85 6px,#2552b0 6px,#2552b0 12px)}
+.card i{font-style:normal;font-size:28px;text-align:center}
+
+/* roulette */
+.wheelbox{position:relative;width:240px;height:240px;margin:8px auto 14px}
+.wheel{width:100%;height:100%;border-radius:50%;border:12px solid #c49a35;background:repeating-conic-gradient(#b30000 0 9.73deg,#111 0 19.46deg);box-shadow:0 0 0 5px #222,inset 0 0 25px #000;transition:transform 3s cubic-bezier(.15,.75,.25,1)}
+.wheelbox::before{content:"▼";position:absolute;top:-14px;left:50%;translate:-50% 0;color:var(--gold);z-index:2;font-size:22px}
+#rlNum{position:absolute;inset:50% auto auto 50%;translate:-50% -50%;width:92px;height:92px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#f7d45a,#a87612);border:5px solid #382900;color:#201400;font-size:38px;font-weight:bold}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.rb{padding:9px 14px;border-radius:8px;border:2px solid #777;font-weight:bold;background:#222}
+.rb.on{outline:3px solid var(--gold);outline-offset:1px}
+.red{background:linear-gradient(#ff5555,#9d0000)}.black{background:linear-gradient(#444,#080808)}.green{background:linear-gradient(#37b879,#056638)}
+.grid{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin:14px 0}
+.grid .rb{padding:8px 0;text-align:center}
+.dot{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;font-size:13px;font-weight:bold}
+
+/* football + stats */
+.match{margin:10px 0;padding:14px;border:1px solid #4d5854;border-radius:12px;background:linear-gradient(145deg,#252d32,#101416)}
+.mt{display:flex;justify-content:space-between;color:var(--mut);font-size:13px}
+.teams{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0;font-weight:bold;font-size:18px}
+.teams i{color:var(--mut);font-size:12px}
+.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.odd{padding:10px 4px;border:2px solid #555;border-radius:8px;background:#181d20}
+.odd b{display:block}.odd:hover{border-color:var(--gold)}.odd.on{background:#a77a14;border-color:#ffe477}
+.slip{margin-top:16px;padding:16px;border:2px solid #3c5548;border-radius:12px;background:#080d0b;text-align:center}
+.tot{margin-top:8px;color:#ffe477}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat{padding:12px;text-align:center;border-radius:10px;background:#12171a;border:1px solid #3f474c}
+.stat small{display:block;color:var(--mut)}.stat b{font-size:22px;color:var(--gold)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;margin:6px 0;border-radius:8px;background:#12171a;border-left:4px solid}
+.row.ok{border-color:var(--ok)}.row.no{border-color:var(--no)}
+.row.ok b{color:var(--ok)}.row.no b{color:var(--no)}
+.scroll{overflow-x:auto}
+
+@media(max-width:640px){.logo{display:none}.grid{grid-template-columns:repeat(7,1fr)}.teams{font-size:15px}.odds{gap:5px}}
+@media(prefers-reduced-motion:reduce){.reel.spin{animation:none}.wheel{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="start">
+  <div class="box">
+    <h1>GROBOVŠEK CASINO</h1>
+    <p class="mut" style="margin-bottom:26px">Virtualni casino · samo navidezni žetoni</p>
+    <button class="mc gold" data-act="go" data-v="slots">▶ POJDI V IGRO</button>
+    <button class="mc" data-act="go" data-v="sports">⚽ NOGOMETNE STAVE</button>
+    <button class="mc" data-act="go" data-v="stats">📊 STATISTIKA</button>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header class="top">
+    <button class="btn sm alt" data-act="home" aria-label="Meni">☰</button>
+    <div class="logo">GROBOVŠEK CASINO</div>
+    <button class="btn sm" id="refill" data-act="refill" hidden>+1000 žetonov</button>
+    <div class="bal"><small>STANJE</small><b id="bal">0</b></div>
+  </header>
+
+  <main>
+    <nav id="tabs">
+      <button data-act="go" data-v="slots">🎰 Slots</button>
+      <button data-act="go" data-v="blackjack">🃏 Blackjack</button>
+      <button data-act="go" data-v="roulette">🎡 Ruleta</button>
+      <button data-act="go" data-v="sports">⚽ Nogomet</button>
+      <button data-act="go" data-v="stats">📊 Statistika</button>
+    </nav>
+
+    <div class="betbar">
+      Stava
+      <button class="btn sm alt" data-act="bet" data-v="-10" aria-label="Zmanjšaj stavo">−</button>
+      <b id="bet">10</b>
+      <button class="btn sm alt" data-act="bet" data-v="10" aria-label="Povečaj stavo">+</button>
+      <button class="btn sm" data-act="betset" data-v="10">10</button>
+      <button class="btn sm" data-act="betset" data-v="50">50</button>
+      <button class="btn sm" data-act="betset" data-v="100">100</button>
+      <button class="btn sm" data-act="betset" data-v="500">500</button>
+      <button class="btn sm" data-act="betset" data-v="max">MAX</button>
+    </div>
+
+    <section id="p-slots" class="panel">
+      <div class="machine">
+        <h2>SUPER SLOTS</h2>
+        <div class="reels"><div class="reel">7️⃣</div><div class="reel">⭐</div><div class="reel">🍒</div></div>
+        <div class="center"><button class="btn" id="spinBtn" data-act="spin">SPIN</button></div>
+        <p class="msg" id="msg-slots">Srečno!</p>
+        <p class="mut" style="color:#222">Trojček: 7️⃣ ×50 · ⭐ ×20 · 🔔 ×10 · ostali ×5 · par: stava nazaj</p>
+      </div>
+    </section>
+
+    <section id="p-blackjack" class="panel">
+      <div class="felt">
+        <h2>🃏 BLACKJACK</h2>
+        <div class="hand"><div class="ht"><span>DELILEC</span><b id="dScore">-</b></div><div class="cards" id="dCards"></div></div>
+        <div class="hand"><div class="ht"><span>TI</span><b id="pScore">-</b></div><div class="cards" id="pCards"></div></div>
+        <p class="msg" id="msg-blackjack">Izberi stavo in pritisni DEAL. Blackjack plača 3:2.</p>
+        <div class="center">
+          <button class="btn" id="dealBtn" data-act="deal">DEAL</button>
+          <button class="btn" id="hitBtn" data-act="hit" disabled>HIT</button>
+          <button class="btn" id="standBtn" data-act="stand" disabled>STAND</button>
+          <button class="btn" id="dblBtn" data-act="dbl" disabled>DOUBLE</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="p-roulette" class="panel">
+      <h2>🎡 RULETA</h2>
+      <div class="wheelbox"><div class="wheel" id="wheel"></div><div id="rlNum" class="green">0</div></div>
+      <div class="chips" id="rlHist" aria-label="Zadnje številke"></div>
+      <p class="msg" id="msg-roulette">Izberi stavo.</p>
+      <div class="chips" id="rlBets"></div>
+      <div class="grid" id="rlGrid"></div>
+      <div class="center"><button class="btn" id="rlBtn" data-act="rspin">🎡 ZAVRTI</button></div>
+    </section>
+
+    <section id="p-sports" class="panel">
+      <h2>⚽ NOGOMETNE STAVE</h2>
+      <p class="mut">Izberi izide (več tekem = kombinirana stava). Višina stave je zgoraj.</p>
+      <div id="fixtures"></div>
+      <div class="slip">
+        <div id="slip">Nič še ni izbrano.</div>
+        <div class="center"><button class="btn" data-act="fplace">⚽ POTRDI STAVO</button><button class="btn alt" data-act="fclear">Počisti</button></div>
+        <div class="msg" id="msg-sports" style="font-size:16px;line-height:1.6"></div>
+      </div>
+    </section>
+
+    <section id="p-stats" class="panel">
+      <h2>📊 STATISTIKA</h2>
+      <div class="stats" id="stats"></div>
+      <h2 style="font-size:18px">Zadnje nogometne stave</h2>
+      <div id="hist" class="scroll"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+'use strict';
+
+/* ---------- pomočniki ---------- */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const rnd = n => Math.floor(Math.random() * n);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const say = (game, text) => { $('#msg-' + game).textContent = text; };
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ---------- stanje + shranjevanje ---------- */
+const KEY = 'grobovsek-casino-v2';
+const START_BALANCE = 1000;
+const S = { balance: START_BALANCE, bet: 10, stats: { rounds: 0, wins: 0, best: 0 }, history: [] };
+try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { /* brez shranjevanja */ }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } };
+
+const wallet = {
+  pay(n) { if (n > S.balance || n < 10) return false; S.balance -= n; render(); return true; },
+  win(n) { S.balance += n; render(); },
+  record(won, amount) {
+    S.stats.rounds++;
+    if (won) { S.stats.wins++; S.stats.best = Math.max(S.stats.best, amount); }
+    save(); renderStats();
+  }
+};
+
+function render() {
+  S.bet = Math.max(10, Math.min(S.bet, Math.floor(S.balance / 10) * 10));
+  $('#bal').textContent = S.balance.toLocaleString('sl-SI');
+  $('#bet').textContent = S.bet;
+  $('#refill').hidden = S.balance >= 10;
+  renderSlip();
+  save();
+}
+
+/* ---------- navigacija ---------- */
+const GAMES = ['slots', 'blackjack', 'roulette', 'sports', 'stats'];
+function go(game) {
+  $('#start').hidden = true;
+  $('#app').hidden = false;
+  GAMES.forEach(g => { $('#p-' + g).hidden = g !== game; });
+  $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === game));
+  $('.betbar').hidden = game === 'stats';
+}
+
+/* ---------- SLOTS ---------- */
+const SYM = [
+  { s: '7️⃣', pay: 50 }, { s: '⭐', pay: 20 }, { s: '🔔', pay: 10 },
+  { s: '🍒', pay: 5 },  { s: '🍋', pay: 5 },  { s: '🍊', pay: 5 }
+];
+let slotsBusy = false;
+
+async function spinSlots() {
+  if (slotsBusy) return;
+  const bet = S.bet;
+  if (!wallet.pay(bet)) return say('slots', 'Premalo žetonov.');
+  slotsBusy = true;
+  $('#spinBtn').disabled = true;
+  try {
+    const reels = $$('.reel');
+    const result = reels.map(() => SYM[rnd(SYM.length)]);
+    reels.forEach(r => r.classList.add('spin'));
+    const timer = setInterval(() => reels.forEach(r => {
+      if (r.classList.contains('spin')) r.textContent = SYM[rnd(SYM.length)].s;
+    }), 70);
+    for (let i = 0; i < reels.length; i++) {
+      await sleep(600 + i * 400);
+      reels[i].classList.remove('spin');
+      reels[i].textContent = result[i].s;
+    }
+    clearInterval(timer);
+
+    const [a, b, c] = result;
+    let win = 0;
+    if (a === b && b === c) win = bet * a.pay;
+    else if (a === b || b === c || a === c) win = bet;
+
+    if (win > bet) say('slots', `🎉 DOBITEK +${win - bet}`);
+    else if (win === bet) say('slots', 'Par — stava vrnjena');
+    else say('slots', 'Brez zadetka');
+    if (win) wallet.win(win);
+    wallet.record(win > bet, win - bet);
+  } finally {
+    slotsBusy = false;
+    $('#spinBtn').disabled = false;
+  }
+}
+
+/* ---------- BLACKJACK ---------- */
+const RANKS = 'A,2,3,4,5,6,7,8,9,10,J,Q,K'.split(',');
+const SUITS = ['♠', '♥', '♦', '♣'];
+const bj = { deck: [], p: [], d: [], bet: 0, live: false };
+
+const cardValue = c => c.r === 'A' ? 11 : 'JQK'.includes(c.r) ? 10 : +c.r;
+function handValue(hand) {
+  let total = hand.reduce((t, c) => t + cardValue(c), 0);
+  let aces = hand.filter(c => c.r === 'A').length;
+  while (total > 21 && aces--) total -= 10;
+  return total;
+}
+const draw = () => bj.deck.pop();
+
+function cardEl(c, hidden) {
+  const el = document.createElement('div');
+  el.className = 'card' + (hidden ? ' back' : SUITS.indexOf(c.s) % 2 === 1 ? ' red' : '');
+  if (!hidden) {
+    el.innerHTML = '<span></span><i></i><span style="text-align:right"></span>';
+    const [t, m, b] = el.children;
+    t.textContent = b.textContent = c.r + c.s;
+    m.textContent = c.s;
+  }
+  return el;
+}
+
+function renderBJ(hideDealer) {
+  $('#pCards').replaceChildren(...bj.p.map(c => cardEl(c)));
+  $('#dCards').replaceChildren(...bj.d.map((c, i) => cardEl(c, hideDealer && i === 1)));
+  $('#pScore').textContent = bj.p.length ? handValue(bj.p) : '-';
+  $('#dScore').textContent = bj.d.length ? (hideDealer ? cardValue(bj.d[0]) + '+?' : handValue(bj.d)) : '-';
+}
+
+function setBJButtons() {
+  $('#dealBtn').disabled = bj.live;
+  $('#hitBtn').disabled = $('#standBtn').disabled = !bj.live;
+  $('#dblBtn').disabled = !(bj.live && bj.p.length === 2 && S.balance >= bj.bet);
+}
+
+function bjDeal() {
+  if (bj.live) return;
+  if (!wallet.pay(S.bet)) return say('blackjack', 'Premalo žetonov.');
+  bj.bet = S.bet;
+  bj.deck = shuffle(SUITS.flatMap(s => RANKS.map(r => ({ r, s }))));
+  bj.p = [draw(), draw()];
+  bj.d = [draw(), draw()];
+  bj.live = true;
+  say('blackjack', 'Tvoja poteza.');
+  const pBJ = handValue(bj.p) === 21, dBJ = handValue(bj.d) === 21;
+  if (pBJ || dBJ) return bjEnd(pBJ && dBJ ? 'push' : pBJ ? 'blackjack' : 'lose');
+  renderBJ(true); setBJButtons();
+}
+
+function bjHit() {
+  if (!bj.live) return;
+  bj.p.push(draw());
+  if (handValue(bj.p) > 21) return bjEnd('lose');
+  renderBJ(true); setBJButtons();
+}
+
+function bjStand() {
+  if (!bj.live) return;
+  while (handValue(bj.d) < 17) bj.d.push(draw());
+  const p = handValue(bj.p), d = handValue(bj.d);
+  bjEnd(d > 21 || p > d ? 'win' : p === d ? 'push' : 'lose');
+}
+
+function bjDouble() {
+  if (!bj.live || bj.p.length !== 2 || !wallet.pay(bj.bet)) return;
+  bj.bet *= 2;
+  bj.p.push(draw());
+  handValue(bj.p) > 21 ? bjEnd('lose') : bjStand();
+}
+
+function bjEnd(result) {
+  bj.live = false;
+  const payout = { blackjack: Math.floor(bj.bet * 2.5), win: bj.bet * 2, push: bj.bet, lose: 0 }[result];
+  const text = {
+    blackjack: `🃏 BLACKJACK! +${payout - bj.bet}`, win: `🎉 ZMAGA +${payout - bj.bet}`,
+    push: 'Izenačeno — stava vrnjena', lose: 'Delilec zmaga'
+  }[result];
+  if (payout) wallet.win(payout);
+  wallet.record(payout > bj.bet, payout - bj.bet);
+  say('blackjack', text);
+  renderBJ(false); setBJButtons();
+}
+
+/* ---------- RULETA ---------- */
+const RED = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+const colorOf = n => n === 0 ? 'green' : RED.has(n) ? 'red' : 'black';
+const BETS = {
+  red:   { label: '🔴 Rdeča', x: 2, test: n => RED.has(n) },
+  black: { label: '⚫ Črna',  x: 2, test: n => n > 0 && !RED.has(n) },
+  even:  { label: 'Soda',     x: 2, test: n => n > 0 && n % 2 === 0 },
+  odd:   { label: 'Liha',     x: 2, test: n => n % 2 === 1 },
+  low:   { label: '1–18',     x: 2, test: n => n >= 1 && n <= 18 },
+  high:  { label: '19–36',    x: 2, test: n => n >= 19 },
+  d1:    { label: '1. ducat (1–12)',  x: 3, test: n => n >= 1 && n <= 12 },
+  d2:    { label: '2. ducat (13–24)', x: 3, test: n => n >= 13 && n <= 24 },
+  d3:    { label: '3. ducat (25–36)', x: 3, test: n => n >= 25 }
+};
+const rl = { sel: null, rot: 0, busy: false, hist: [] };
+
+function buildRoulette() {
+  $('#rlBets').replaceChildren(...Object.entries(BETS).map(([k, b]) => {
+    const el = document.createElement('button');
+    el.className = 'rb'; el.dataset.act = 'rpick'; el.dataset.v = k; el.textContent = b.label;
+    return el;
+  }));
+  $('#rlGrid').replaceChildren(...Array.from({ length: 37 }, (_, n) => {
+    const el = document.createElement('button');
+    el.className = 'rb ' + colorOf(n); el.dataset.act = 'rpick'; el.dataset.v = 'n:' + n; el.textContent = n;
+    return el;
+  }));
+}
+
+function rlPick(key) {
+  if (rl.busy) return;
+  rl.sel = key;
+  $$('#p-roulette .rb').forEach(b => b.classList.toggle('on', b.dataset.v === key));
+  say('roulette', key.startsWith('n:') ? `Stava na številko ${key.slice(2)} (×36)` : `Stava: ${BETS[key].label} (×${BETS[key].x})`);
+}
+
+async function rlSpin() {
+  if (rl.busy) return;
+  if (!rl.sel) return say('roulette', 'Najprej izberi stavo.');
+  const bet = S.bet;
+  if (!wallet.pay(bet)) return say('roulette', 'Premalo žetonov.');
+  rl.busy = true; $('#rlBtn').disabled = true;
+  try {
+    const n = rnd(37);
+    rl.rot += 1440 + rnd(360);
+    $('#wheel').style.transform = `rotate(${rl.rot}deg)`;
+    $('#rlNum').textContent = '…';
+    say('roulette', 'Kolo se vrti…');
+    await sleep(3200);
+
+    const num = rl.sel.startsWith('n:') ? +rl.sel.slice(2) : null;
+    const b = num !== null ? { x: 36, test: v => v === num } : BETS[rl.sel];
+    const win = b.test(n) ? bet * b.x : 0;
+
+    $('#rlNum').textContent = n;
+    $('#rlNum').className = colorOf(n);
+    rl.hist = [n, ...rl.hist].slice(0, 12);
+    $('#rlHist').replaceChildren(...rl.hist.map(v => {
+      const d = document.createElement('span');
+      d.className = 'dot ' + colorOf(v); d.textContent = v;
+      return d;
+    }));
+    if (win) wallet.win(win);
+    wallet.record(win > 0, win - bet);
+    say('roulette', win ? `🎉 ${n} — DOBITEK +${win - bet}` : `${n} — brez zadetka`);
+  } finally {
+    rl.busy = false; $('#rlBtn').disabled = false;
+  }
+}
+
+/* ---------- NOGOMET ---------- */
+const FIX = [
+  { lg: 'Premier League', when: 'Danes • 18:00',  h: 'Manchester City', a: 'Arsenal',     o: [1.70, 3.80, 4.20] },
+  { lg: 'La Liga',        when: 'Danes • 20:30',  h: 'Barcelona',       a: 'Real Madrid', o: [2.10, 3.40, 2.70] },
+  { lg: 'Serie A',        when: 'Jutri • 19:00',  h: 'Inter',           a: 'AC Milan',    o: [1.90, 3.30, 3.70] },
+  { lg: 'Premier League', when: 'Jutri • 21:00',  h: 'Liverpool',       a: 'Chelsea',     o: [1.80, 3.60, 4.00] }
+];
+const OUT = ['1', 'X', '2'];
+const F = { sel: {} };
+
+/* Izide simuliramo glede na kvote (implicirane verjetnosti, normalizirane). */
+function simulate(m) {
+  const p = m.o.map(o => 1 / o), sum = p.reduce((a, b) => a + b);
+  let r = Math.random() * sum, out = 0;
+  while (r > p[out]) r -= p[out++];
+  let h, a;
+  if (out === 0) { h = 1 + rnd(3); a = rnd(h); }
+  else if (out === 2) { a = 1 + rnd(3); h = rnd(a); }
+  else h = a = rnd(3);
+  return { out, h, a };
+}
+
+function renderFixtures() {
+  $('#fixtures').innerHTML = FIX.map((m, id) => `
+    <div class="match">
+      <div class="mt"><span>${m.when}</span><span>${m.lg}</span></div>
+      <div class="teams"><span>${m.h}</span><i>VS</i><span>${m.a}</span></div>
+      <div class="odds">${m.o.map((o, i) =>
+        `<button class="odd${F.sel[id] === i ? ' on' : ''}" data-act="fpick" data-m="${id}" data-i="${i}">${OUT[i]}<b>${o.toFixed(2)}</b></button>`
+      ).join('')}</div>
+    </div>`).join('');
+  renderSlip();
+}
+
+function slipOdds() {
+  return Object.entries(F.sel).reduce((p, [id, i]) => p * FIX[id].o[i], 1);
+}
+
+function renderSlip() {
+  const el = $('#slip');
+  if (!el) return;
+  const picks = Object.entries(F.sel);
+  el.innerHTML = picks.length
+    ? picks.map(([id, i]) => `<div>${FIX[id].h} – ${FIX[id].a}: <b>${OUT[i]}</b> (${FIX[id].o[i].toFixed(2)})</div>`).join('') +
+      `<div class="tot">Skupna kvota <b>${slipOdds().toFixed(2)}</b> · možni dobitek <b>${Math.floor(S.bet * slipOdds())}</b></div>`
+    : 'Nič še ni izbrano.';
+}
+
+function fPick(id, i) {
+  F.sel[id] === i ? delete F.sel[id] : (F.sel[id] = i);
+  renderFixtures();
+}
+
+function fPlace() {
+  const picks = Object.entries(F.sel);
+  if (!picks.length) return say('sports', 'Najprej izberi vsaj en izid.');
+  const stake = S.bet;
+  if (!wallet.pay(stake)) return say('sports', 'Premalo žetonov.');
+  const odds = slipOdds();
+  const lines = [];
+  let allOk = true;
+  picks.forEach(([id, i]) => {
+    const m = FIX[id], r = simulate(m), ok = r.out === i;
+    allOk = allOk && ok;
+    lines.push(`${ok ? '✅' : '❌'} ${m.h} ${r.h}:${r.a} ${m.a} (tvoj izid ${OUT[i]})`);
+  });
+  const win = allOk ? Math.floor(stake * odds) : 0;
+  if (win) wallet.win(win);
+  wallet.record(allOk, win - stake);
+  S.history = [{
+    t: picks.map(([id, i]) => `${FIX[id].h}–${FIX[id].a} (${OUT[i]})`).join(', '),
+    ok: allOk, stake, win
+  }, ...S.history].slice(0, 15);
+  save(); renderStats();
+  $('#msg-sports').innerHTML = lines.join('<br>') + `<br>${allOk ? '🎉 DOBITEK +' + (win - stake) : 'Stava izgubljena'}`;
+  F.sel = {}; renderFixtures();
+}
+
+/* ---------- STATISTIKA ---------- */
+function renderStats() {
+  const { rounds, wins, best } = S.stats;
+  $('#stats').innerHTML = [
+    ['Odigrane igre', rounds], ['Zmage', wins],
+    ['Uspešnost', rounds ? Math.round(wins / rounds * 100) + '%' : '–'], ['Največji dobitek', best]
+  ].map(([k, v]) => `<div class="stat"><small>${k}</small><b>${v}</b></div>`).join('');
+
+  const hist = $('#hist');
+  hist.replaceChildren(...(S.history.length ? S.history.map(h => {
+    const row = document.createElement('div');
+    row.className = 'row ' + (h.ok ? 'ok' : 'no');
+    const t = document.createElement('span'), v = document.createElement('b');
+    t.textContent = h.t; v.textContent = h.ok ? '+' + (h.win - h.stake) : '−' + h.stake;
+    row.append(t, v);
+    return row;
+  }) : [Object.assign(document.createElement('p'), { className: 'mut', textContent: 'Še ni nogometnih stav.' })]));
+}
+
+/* ---------- dogodki (event delegation) ---------- */
+const ACTIONS = {
+  go: d => go(d.v),
+  home: () => { $('#app').hidden = true; $('#start').hidden = false; },
+  bet: d => { S.bet += +d.v; render(); },
+  betset: d => { S.bet = d.v === 'max' ? S.balance : +d.v; render(); },
+  refill: () => { S.balance += START_BALANCE; render(); },
+  spin: spinSlots,
+  deal: bjDeal, hit: bjHit, stand: bjStand, dbl: bjDouble,
+  rpick: d => rlPick(d.v), rspin: rlSpin,
+  fpick: d => fPick(d.m, +d.i),
+  fplace: fPlace,
+  fclear: () => { F.sel = {}; renderFixtures(); }
+};
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if (t && !t.disabled) ACTIONS[t.dataset.act]?.(t.dataset);
+});
+
+/* ---------- zagon ---------- */
+buildRoulette();
+renderFixtures();
+renderStats();
+setBJButtons();
+render();
+go('slots');
+$('#app').hidden = true;
+$('#start').hidden = false;
+</script>
+</body>
+</html>

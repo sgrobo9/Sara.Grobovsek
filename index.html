@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sara Grobovšek</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== BARVE (tukaj jih lahko spremeniš) ===== */
+  :root {
+    --ozadje: #0a0f1f;
+    --cian: #22d3ee;
+    --vijola: #a78bfa;
+    --lima: #b6ff3b;
+    --steklo: rgba(255, 255, 255, 0.06);
+    --rob: rgba(255, 255, 255, 0.16);
+    --besedilo: #e8ecf8;
+    --tiho: #9aa5c4;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* Gladko drsenje do razdelka, ko klikneš v meniju */
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    font-family: "Space Grotesk", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--besedilo);
+    background-color: var(--ozadje);
+    /* svetleči madeži + fina mreža kot na igrišču / v tehnologiji */
+    background-image:
+      radial-gradient(600px 400px at 12% 8%, rgba(34, 211, 238, 0.22), transparent 70%),
+      radial-gradient(700px 500px at 92% 30%, rgba(167, 139, 250, 0.22), transparent 70%),
+      radial-gradient(600px 400px at 30% 95%, rgba(182, 255, 59, 0.12), transparent 70%),
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: auto, auto, auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+
+  /* ===== MENI ===== */
+  nav {
+    position: sticky;
+    top: 12px;
+    z-index: 10;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    margin: 12px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+    background: rgba(10, 15, 31, 0.7);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--rob);
+    border-radius: 999px;
+  }
+  nav a {
+    padding: 8px 18px;
+    border-radius: 999px;
+    color: var(--besedilo);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  nav a:hover { background: linear-gradient(90deg, var(--cian), var(--vijola)); color: #07101f; }
+  a:focus-visible { outline: 3px solid var(--lima); outline-offset: 2px; }
+
+  /* ===== NASLOV (hero) ===== */
+  header {
+    text-align: center;
+    padding: 90px 20px 70px;
+  }
+  header h1 {
+    margin: 0 0 18px;
+    font-size: clamp(2.4rem, 8vw, 5.2rem);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--cian), var(--vijola) 55%, var(--lima));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.35));
+  }
+  header p {
+    display: inline-block;
+    margin: 0;
+    padding: 8px 20px;
+    border: 1px solid var(--rob);
+    background: var(--steklo);
+    border-radius: 999px;
+    color: var(--tiho);
+  }
+
+  /* ===== VSEBINA ===== */
+  main { max-width: 880px; margin: 0 auto; padding: 0 20px 60px; }
+
+  section {
+    scroll-margin-top: 90px;       /* da meni ne prekrije naslova */
+    margin-bottom: 36px;
+    padding: 32px;
+    background: var(--steklo);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--rob);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  }
+
+  h2 {
+    margin: 0 0 14px;
+    font-size: 2rem;
+    line-height: 1.15;
+    color: #fff;
+  }
+  h2::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 4px;
+    margin-top: 10px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--cian), var(--lima));
+  }
+
+  p { margin: 0 0 16px; }
+
+  /* ===== SLIKE ===== */
+  figure { margin: 20px 0 0; }
+  figure img {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 18px;
+    border: 1px solid var(--rob);
+    box-shadow: 0 0 40px rgba(34, 211, 238, 0.25);
+  }
+  /* Če slike ne najde, se pokaže ta okvir z navodilom */
+  .manjka {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    padding: 20px;
+    text-align: center;
+    color: var(--tiho);
+    border: 2px dashed var(--rob);
+    border-radius: 18px;
+  }
+
+  /* ===== GUMBI ===== */
+  .gumb {
+    display: inline-block;
+    padding: 12px 26px;
+    border-radius: 999px;
+    color: #07101f;
+    font-weight: 700;
+    text-decoration: none;
+    background: linear-gradient(90deg, var(--cian), var(--vijola));
+    box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
+  }
+  .gumb:hover { background: linear-gradient(90deg, var(--lima), var(--cian)); }
+
+  .igre { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+  .igra {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 22px; border-radius: 18px; text-decoration: none; color: var(--besedilo);
+    background: rgba(255, 255, 255, 0.06); border: 1px solid var(--rob);
+  }
+  .igra strong { font-size: 1.3rem; color: #fff; }
+  .igra span { color: var(--tiho); font-size: 0.95rem; }
+  .igra:hover { border-color: var(--cian); box-shadow: 0 0 30px rgba(34, 211, 238, 0.3); }
+
+  /* Dve sliki ena zraven druge (na telefonu ena pod drugo) */
+  .slike { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+  .slike figure { flex: 1 1 260px; margin: 20px 0 0; }
+
+  /* Velika slika ekipe: čez celotno širino okvirja */
+  .velika img { max-width: 100%; }
+
+  .naprej { text-align: center; }
+  .naprej img { max-width: 100%; height: auto; }
+
+  footer { text-align: center; padding: 0 20px 40px; color: var(--tiho); font-size: 0.9rem; }
+</style>
+</head>
+
+<body>
+
+<!-- MENI: href="#..." te pelje do razdelka z istim id -->
+<nav>
+  <a href="#domov">Domov</a>
+  <a href="#wu15">Reprezentanca WU15</a>
+  <a href="#mura">Mura Nona in Radlje</a>
+  <a href="#igrici">Moji igrici</a>
+  <a href="#naprej">Nazaj</a>
+</nav>
+
+<header id="domov">
+  <h1>SARA GROBOVŠEK</h1>
+  <p>Sara Grobovšek · nogometašica</p>
+</header>
+
+<main>
+
+  <section>
+    <h2>Kdo sem</h2>
+    <p>
+      Sem Sara Grobovšek, obiskujem osnovno šolo Radlje ob Dravi, treniram nogomet
+      in igram za ŽNK Muro Nono, za NK Radlje in reprezentanco WU15.
+    </p>
+  </section>
+
+  <section id="wu15">
+    <h2>Reprezentanca WU15</h2>
+    <p>
+      Septembra 2026 smo z reprezentanco WU15 osvojili razvojni turnir!
+      Na poti do zmage smo premagali Litvo, Bosno in Hercegovino ter Madžarsko. 🏆
+    </p>
+    <figure>
+      <img src="repka.webp" alt="Reprezentanca WU15"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    </figure>
+  </section>
+
+  <section id="mura">
+    <h2>ŽNK Mura Nona in NK Radlje</h2>
+    <p>
+      Moja ekipa ŽNK Mura Nona DU17. S to ekipo smo sezono 2025/2026
+      osvojili 1. NZS ligo DU17! 🏆
+    </p>
+    <figure>
+      <img src="MuraNona.jpg" alt="Ekipa ŽNK Mura Nona DU17"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+    </figure>
+    <p style="margin-top:24px">Povezava do spletne strani Mure:</p>
+    <a class="gumb" href="https://nsmura.si/znk/" target="_blank" rel="noopener">Uradna stran NŠ Mura</a>
+  </section>
+
+  <section id="igrici">
+    <h2>Moji igrici</h2>
+    <p>Igrici sem naredila sama v HTML in JavaScriptu. Klikni in igraj!</p>
+    <div class="igre">
+      <a class="igra" href="grobovsek-casino.html" target="_blank" rel="noopener">
+        <strong>Grobovšek Casino 🎰</strong>
+        <span>Virtualni casino: avtomat, blackjack, ruleta in stave na nogomet.</span>
+      </a>
+      <a class="igra" href="enajstmetrovke.html" target="_blank" rel="noopener">
+        <strong>Enajstmetrovke ⚽</strong>
+        <span>Pet strelov na gol. Zadeni vratarja in postani rekorderka!</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="naprej" class="naprej">
+    <h2 style="text-align:left">Nazaj</h2>
+    <a href="osradlje.html">
+      <img src="puscica.png" alt="Nazaj na stran OŠ Radlje"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+      <span class="gumb" style="display:none">Nazaj na OŠ Radlje</span>
+    </a>
+  </section>
+
+</main>
+
+
+
+</body>
+</html>
